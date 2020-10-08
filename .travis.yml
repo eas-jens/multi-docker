@@ -1,0 +1,24 @@
+sudo: required
+language: generic 
+services:
+    - docker
+
+before_install:
+    - docker build -t jenst44/react-test -f ./client/Dockerfile .
+
+scripts:
+    - docker run -e CI=true USERNAME/react-test npm test
+
+after_success:
+    # build docker images
+    - docker build -t jenst44/multi-client ./client
+    - docker build -t jenst44/multi-nginx ./nginx
+    - docker build -t jenst44/multi-server ./server
+    - docker build -t jenst44/multi-worker ./worker
+    # Login to docker hub
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # send images to docker hub
+    - docker push jenst44/multi-client
+    - docker push jenst44/multi-nginx
+    - docker push jenst44/multi-server
+    - docker push jenst44/multi-worker
