@@ -22,3 +22,16 @@ after_success:
     - docker push jenst44/multi-nginx
     - docker push jenst44/multi-server
     - docker push jenst44/multi-worker
+
+deploy:
+    edge: true
+    provider: elasticbeanstalk
+    region: 'us-west-2'
+    app: 'multi-docker'
+    env: 'MultiDocker-env'
+    bucket_name: 'elasticbeanstalk-us-west-2-835301057101'
+    bucket_path: 'multi-docker'
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
